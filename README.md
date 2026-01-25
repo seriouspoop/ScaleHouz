@@ -86,8 +86,8 @@ Unlike traditional agencies that work in silos, ScaleHouz operates as a single u
 
 Ready to install the Growth OS for your business?
 
-* **Email:** [Insert Email Here]
-* **Website:** [Insert Website Here]
+* **Email:** [info@scalehouz.com](mailto:info@scalehouz.com?subject=Inquiry%20About%20Projects)
+* **Contact:** <a href="tel:+919971277746">+91 9971277746</a>
 * **Location:** Global / Remote
 
 > *"Let’s shape your story. Your tech future is secured with us."*
