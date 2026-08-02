@@ -308,7 +308,9 @@
         if (curEl) curEl.textContent = '01';
         return;
       }
-      travel = Math.max(0, track.scrollWidth - wrap.clientWidth);
+      var lastCard = cards[cards.length - 1];
+      var centerShift = lastCard.offsetLeft + lastCard.offsetWidth / 2 - wrap.clientWidth / 2;
+      travel = Math.max(0, track.scrollWidth - wrap.clientWidth, centerShift);
       pace = travel * 1.15;
       outer.style.height = (innerHeight + pace) + 'px';
       tick();
