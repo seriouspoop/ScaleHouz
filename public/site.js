@@ -54,7 +54,13 @@
         var id = a.getAttribute('href');
         if (id.length < 2) return;
         var t = document.querySelector(id);
-        if (t) { e.preventDefault(); lenis.scrollTo(t, { offset: 0 }); }
+        if (!t) return;
+        e.preventDefault();
+        /* long jumps (e.g. project card -> #cta) would otherwise animate
+           straight through the pinned how-we-work gallery, visibly
+           flicking through every card on the way. Jump instantly instead. */
+        var dist = Math.abs(t.getBoundingClientRect().top);
+        lenis.scrollTo(t, { offset: 0, immediate: dist > innerHeight * 1.5 });
       });
     });
   }
@@ -222,17 +228,6 @@
     });
   }
 
-  /* ---------- service cards: click to expand deliverables ---------- */
-  $$('.scard').forEach(function (card) {
-    var btn = $('.s-explore', card);
-    if (!btn) return;
-    btn.addEventListener('click', function () {
-      var open = card.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      btn.firstChild.textContent = open ? 'Hide deliverables ' : 'Explore deliverables ';
-    });
-  });
-
   /* ---------- service canvas: blob reacts to cursor ---------- */
   if (fine && !reduced) {
     $$('.scard').forEach(function (card) {
@@ -285,5 +280,61 @@
       for (var i = 0; i < n; i++) place(t + i * (Math.PI * 2 / n), i);
       requestAnimationFrame(loop);
     })(last);
+  })();
+
+  /* ---------- how-we-work: pinned horizontal scroll gallery ---------- */
+  (function () {
+    var outer = $('#proc-pin-outer');
+    var wrap = outer && $('.proc-track-wrap', outer);
+    var track = $('#proc-track');
+    var cards = track ? $$('.pcard', track) : [];
+    var barFill = $('#proc-bar-fill');
+    var curEl = $('#proc-cur');
+    var totalEl = $('#proc-total');
+    if (!outer || !wrap || !track || !cards.length) return;
+    if (totalEl) totalEl.textContent = ('0' + cards.length).slice(-2);
+
+    var enabled = false, travel = 0, pace = 0, pTicking = false;
+
+    function isDesktop() { return matchMedia('(min-width:861px)').matches && !reduced; }
+
+    function measure() {
+      enabled = isDesktop();
+      if (!enabled) {
+        outer.style.height = '';
+        track.style.transform = '';
+        cards.forEach(function (c) { c.style.opacity = ''; c.style.transform = ''; });
+        if (barFill) barFill.style.transform = '';
+        if (curEl) curEl.textContent = '01';
+        return;
+      }
+      travel = Math.max(0, track.scrollWidth - wrap.clientWidth);
+      pace = travel * 1.15;
+      outer.style.height = (innerHeight + pace) + 'px';
+      tick();
+    }
+
+    function tick() {
+      pTicking = false;
+      if (!enabled) return;
+      var rect = outer.getBoundingClientRect();
+      var p = pace > 0 ? Math.min(1, Math.max(0, -rect.top / pace)) : 0;
+      track.style.transform = 'translate3d(' + (-p * travel) + 'px,0,0)';
+      if (barFill) barFill.style.transform = 'scaleX(' + p + ')';
+      if (curEl) curEl.textContent = ('0' + (Math.round(p * (cards.length - 1)) + 1)).slice(-2);
+      var wrapMid = wrap.clientWidth / 2;
+      cards.forEach(function (c) {
+        var center = c.offsetLeft + c.offsetWidth / 2 - p * travel;
+        var norm = wrapMid > 0 ? Math.min(1, Math.abs(center - wrapMid) / wrapMid) : 0;
+        c.style.opacity = String(1 - norm * 0.55);
+        c.style.transform = 'scale(' + (1 - norm * 0.08) + ')';
+      });
+    }
+
+    function onProcScroll() { if (!pTicking) { pTicking = true; requestAnimationFrame(tick); } }
+    addEventListener('scroll', onProcScroll, { passive: true });
+    if (lenis) lenis.on('scroll', onProcScroll);
+    addEventListener('resize', measure);
+    measure();
   })();
 })();

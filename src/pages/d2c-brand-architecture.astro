@@ -1,0 +1,24 @@
+---
+import ServicePage from '../components/ServicePage.astro';
+
+const caps = [
+  { n: '01', h: 'Brand Strategy', items: ['Audience Research', 'Brand Direction', 'Consumer Insights', 'Brand Foundations'] },
+  { n: '02', h: 'Identity Systems', items: ['Visual Identity', 'Brand Guidelines', 'Design Language', 'Brand Consistency'] },
+  { n: '03', h: 'Packaging Strategy', items: ['Packaging Direction', 'Shelf Presence', 'Consumer Perception', 'Packaging Systems'] },
+  { n: '04', h: 'Go-to-Market', items: ['Launch Strategy', 'Market Positioning', 'Communication Framework', 'Growth Roadmap'] },
+];
+---
+<ServicePage
+  path="/d2c-brand-architecture"
+  title="D2C Brand Architecture — Scale Houz"
+  description="Build memorable consumer brands through strategic positioning, cohesive identity systems, packaging that commands attention, and launch strategies designed for long-term growth."
+  kicker="Service · 01 — Positioning · Identity · Packaging"
+  heading="D2C Brand Architecture"
+  intro="Build memorable consumer brands through strategic positioning, cohesive identity systems, packaging that commands attention, and launch strategies designed for long-term growth."
+  pills={['Brand Strategy', 'Identity Systems', 'Packaging Strategy', 'Go-to-Market']}
+  gradient="linear-gradient(140deg, #00BCF2 0%, #06485c 60%, #08222c 100%)"
+  accent="var(--sh-cyan)"
+  btnText="var(--sh-black)"
+  caps={caps}
+  ctaHeading="Ready to build a brand that outlasts trends?"
+/>

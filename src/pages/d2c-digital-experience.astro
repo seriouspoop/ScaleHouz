@@ -1,0 +1,22 @@
+---
+import ServicePage from '../components/ServicePage.astro';
+
+const caps = [
+  { n: '01', h: 'Websites', items: ['Brand Websites', 'Corporate Websites', 'E-commerce Websites', 'Responsive Development', 'UX/UI Design', 'CMS & Custom Development'] },
+  { n: '02', h: 'Landing Pages', items: ['Product Launch Pages', 'Marketing Campaign Pages', 'High-Converting Sales Pages', 'Lead Generation Pages', 'Event & Webinar Pages', 'Conversion Optimization'] },
+];
+---
+<ServicePage
+  path="/d2c-digital-experience"
+  title="D2C Digital Experience — Scale Houz"
+  description="Fast, premium digital experiences — brand and e-commerce websites plus high-converting landing pages, engineered to turn attention into measurable growth."
+  kicker="Service · 02 — Websites · Landing · E-commerce"
+  heading="D2C Digital Experience"
+  intro="Fast, premium digital experiences — brand and e-commerce websites plus high-converting landing pages, engineered to turn attention into measurable growth."
+  pills={['Websites', 'Landing Pages', 'E-commerce', 'Conversion']}
+  gradient="linear-gradient(140deg, #F18E31 0%, #b23d12 55%, #4a1606 100%)"
+  accent="var(--sh-amber)"
+  btnText="var(--sh-black)"
+  caps={caps}
+  ctaHeading="Ready for a site engineered to convert?"
+/>

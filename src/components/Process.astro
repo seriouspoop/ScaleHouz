@@ -1,23 +1,44 @@
 ---
-/** From brief to launch — 4-step process grid. */
+/** Pinned horizontal-scroll "how we work" gallery (site.js drives the scroll-linked track transform). */
 const steps = [
-  { wk: 'Week 1', num: '01', h: 'Discovery &amp; strategy', p: 'We analyse your brand and audience to build a solid foundation and a clear plan.' },
-  { wk: 'Week 2–3', num: '02', h: 'Design &amp; prototyping', p: 'We craft the journey and high-fidelity prototypes to test, refine, and approve.' },
-  { wk: 'Week 4–5', num: '03', h: 'Build &amp; motion', p: 'Pixel-perfect build with smooth interactions, responsive layouts, fast performance.' },
-  { wk: 'Week 6', num: '04', h: 'Launch &amp; support', p: 'Rigorous QA, SEO, launch — then we stay close as you grow.' },
+  { acc: 'var(--sh-cyan)', wk: 'Week 1', num: '01', h: 'Discovery &amp; strategy', p: 'We analyse your brand and audience to build a solid foundation and a clear plan.' },
+  { acc: 'var(--sh-amber)', wk: 'Week 2–3', num: '02', h: 'Design &amp; prototyping', p: 'We craft the journey and high-fidelity prototypes to test, refine, and approve.' },
+  { acc: 'var(--sh-magenta)', wk: 'Week 4–5', num: '03', h: 'Build &amp; motion', p: 'Pixel-perfect build with smooth interactions, responsive layouts, fast performance.' },
+  { acc: 'var(--sh-white)', wk: 'Week 6', num: '04', h: 'Launch &amp; support', p: 'Rigorous QA, SEO, launch — then we stay close as you grow.', dark: true },
 ];
 ---
-<section id="process" data-screen-label="Process">
-  <div class="sec-head light" style="max-width:1280px">
-    <span class="kicker reveal">// How we work</span>
-    <h2 class="reveal" data-d="1">From brief to launch, without the chaos.</h2>
-  </div>
-  <div class="proc-grid">
-    {steps.map((s, i) => (
-      <div class="step reveal" data-d={i === 0 ? undefined : String(i)}>
-        <span class="wk">{s.wk}</span><span class="snum">{s.num}</span>
-        <h3 set:html={s.h} /><p>{s.p}</p>
+<section id="process" data-screen-label="How We Work">
+  <div class="proc-pin-outer" id="proc-pin-outer">
+    <div class="proc-pin">
+      <div class="sec-orb" id="p-orb-a" aria-hidden="true"></div>
+      <div class="sec-orb" id="p-orb-b" aria-hidden="true"></div>
+      <div class="proc-head">
+        <div class="sec-head light" style="max-width:640px;margin:0">
+          <span class="kicker reveal morph">// How we work</span>
+          <h2 class="reveal morph" data-d="1">From brief to launch, without the chaos.</h2>
+        </div>
+        <div class="proc-meter reveal morph" data-d="2" aria-hidden="true">
+          <span class="proc-count"><span id="proc-cur">01</span> / <span id="proc-total">04</span></span>
+          <span class="proc-bar"><span class="proc-bar-fill" id="proc-bar-fill"></span></span>
+          <span class="proc-hint">Scroll to explore →</span>
+        </div>
       </div>
-    ))}
+      <div class="proc-track-wrap">
+        <div class="proc-track" id="proc-track">
+          {steps.map((s) => (
+            <article class:list={['pcard', { 'pcard-dark': s.dark }]} style={`--acc:${s.acc}`}>
+              <div class="pcard-visual">
+                <span class="pcard-chip">{s.num}</span>
+              </div>
+              <div class="pcard-body">
+                <div class="pcard-top"><span class="wk">{s.wk}</span><span class="snum">{s.num}</span></div>
+                <h3 set:html={s.h} />
+                <p>{s.p}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
   </div>
 </section>

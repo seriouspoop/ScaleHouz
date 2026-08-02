@@ -1,0 +1,31 @@
+/* Scale Houz — D2C service detail pages (Brand Architecture / Digital Experience / Content & Authority). */
+body { margin: 0; background: var(--sh-black); color: var(--sh-white); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+::selection { background: var(--sh-yellow); color: var(--sh-black); }
+a { color: inherit; }
+
+.svc-top { display: flex; align-items: center; justify-content: space-between; padding: 24px clamp(20px, 6vw, 96px); position: relative; z-index: 2; }
+.svc-top img { height: 34px; display: block; }
+.svc-back { font-size: 11px; font-weight: var(--weight-semibold); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--sh-gray-500); text-decoration: none; transition: color var(--duration-fast) var(--ease-out); }
+.svc-back:hover { color: var(--sh-white); }
+
+.svc-hero { position: relative; padding: clamp(40px, 6vw, 72px) clamp(20px, 6vw, 96px) clamp(60px, 8vw, 100px); overflow: hidden; }
+.svc-hero::before { content: ""; position: absolute; inset: 0; background: var(--svc-gradient); opacity: .9; z-index: 0; }
+.svc-hero > * { position: relative; z-index: 1; }
+.svc-hero .kicker { color: rgba(255,255,255,.8); font-size: 11px; font-weight: var(--weight-semibold); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.svc-hero h1 { margin: 18px 0 0; font-size: clamp(38px, 6vw, 76px); font-weight: var(--weight-semibold); letter-spacing: -.02em; line-height: 1.05; max-width: 16ch; }
+.svc-hero p { margin: 26px 0 0; font-family: var(--font-serif); font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; color: rgba(255,255,255,.85); max-width: 56ch; }
+.svc-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.svc-pills span { border: 1px solid rgba(255,255,255,.3); border-radius: var(--radius-pill); padding: 9px 18px; font-size: 12px; font-weight: var(--weight-medium); }
+
+.svc-caps { max-width: 1280px; margin: 0 auto; padding: clamp(60px, 8vw, 100px) clamp(20px, 6vw, 96px); display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(24px, 3vw, 40px); }
+.svc-cap-n { font-size: clamp(22px, 2.4vw, 30px); font-weight: var(--weight-semibold); color: var(--svc-accent); }
+.svc-cap h4 { margin: 10px 0 14px; font-size: clamp(18px, 1.8vw, 22px); font-weight: var(--weight-semibold); }
+.svc-cap ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.svc-cap li { font-size: 14px; line-height: 1.5; color: var(--sh-gray-300); }
+
+.svc-cta-band { text-align: center; padding: clamp(70px, 10vw, 130px) clamp(20px, 6vw, 96px); border-top: 1px solid var(--sh-gray-900); }
+.svc-cta-band h2 { margin: 0 auto 30px; font-size: clamp(28px, 4vw, 48px); font-weight: var(--weight-semibold); letter-spacing: -.02em; max-width: 18ch; }
+.svc-btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: var(--weight-semibold); letter-spacing: var(--tracking-caps); text-transform: uppercase; padding: 18px 34px; transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
+.svc-btn:hover { transform: translateY(-3px); }
+
+.svc-footer { text-align: center; padding: 28px; font-size: 12px; color: var(--sh-gray-500); }

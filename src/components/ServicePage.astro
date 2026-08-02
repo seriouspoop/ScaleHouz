@@ -1,0 +1,69 @@
+---
+/** Shared layout for the three D2C service detail pages (linked from Services.astro cv-arrow). */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/service.css';
+
+export interface Cap {
+  n: string;
+  h: string;
+  items: string[];
+}
+
+export interface Props {
+  path: string;
+  title: string;
+  description: string;
+  kicker: string;
+  heading: string;
+  intro: string;
+  pills: string[];
+  gradient: string;
+  accent: string;
+  btnText: string;
+  caps: Cap[];
+  ctaHeading: string;
+}
+
+const {
+  path,
+  title,
+  description,
+  kicker,
+  heading,
+  intro,
+  pills,
+  gradient,
+  accent,
+  btnText,
+  caps,
+  ctaHeading,
+} = Astro.props;
+---
+<BaseLayout title={title} description={description} path={path}>
+  <div class="svc-top">
+    <a href="/" aria-label="Scale Houz — home"><img src="/assets/logo/scale_houz.svg" alt="Scale Houz" width="73" height="34" /></a>
+    <a class="svc-back" href="/#services">← Back to services</a>
+  </div>
+  <section class="svc-hero" style={`--svc-gradient:${gradient}`}>
+    <span class="kicker">{kicker}</span>
+    <h1>{heading}</h1>
+    <p>{intro}</p>
+    <div class="svc-pills">
+      {pills.map((p) => <span>{p}</span>)}
+    </div>
+  </section>
+  <div class="svc-caps">
+    {caps.map((cap) => (
+      <div class="svc-cap" style={`--svc-accent:${accent}`}>
+        <span class="svc-cap-n">{cap.n}</span>
+        <h4>{cap.h}</h4>
+        <ul>{cap.items.map((item) => <li>{item}</li>)}</ul>
+      </div>
+    ))}
+  </div>
+  <div class="svc-cta-band">
+    <h2>{ctaHeading}</h2>
+    <a class="svc-btn" style={`background:${accent}; color:${btnText}`} href="/onboarding">Start a project <span aria-hidden="true">→</span></a>
+  </div>
+  <footer class="svc-footer">© 2026 Scale Houz.</footer>
+</BaseLayout>

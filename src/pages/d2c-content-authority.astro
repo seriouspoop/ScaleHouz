@@ -1,0 +1,24 @@
+---
+import ServicePage from '../components/ServicePage.astro';
+
+const caps = [
+  { n: '01', h: 'Strategy', items: ['Brand Positioning', 'Content Strategy', 'Consumer Research', 'Editorial Planning'] },
+  { n: '02', h: 'Social', items: ['Social Management', 'Platform Growth', 'Community Building', 'Content Distribution'] },
+  { n: '03', h: 'Production', items: ['Creative Direction', 'Photography', 'Video Production', 'Short-form Content'] },
+  { n: '04', h: 'Creator Partnerships', items: ['Creator Sourcing', 'Campaign Planning', 'Talent Management', 'Performance Reporting'] },
+];
+---
+<ServicePage
+  path="/d2c-content-authority"
+  title="D2C Content & Authority — Scale Houz"
+  description="Build cultural authority with sharp positioning, always-on social, standout production, and creator partnerships that compound reach over time."
+  kicker="Service · 03 — Strategy · Social · Production"
+  heading="D2C Content & Authority"
+  intro="Build cultural authority with sharp positioning, always-on social, standout production, and creator partnerships that compound reach over time."
+  pills={['Strategy', 'Social', 'Production', 'Creator Partnerships']}
+  gradient="linear-gradient(140deg, #EC008C 0%, #8a1258 55%, #2e0a24 100%)"
+  accent="var(--sh-magenta)"
+  btnText="var(--sh-white)"
+  caps={caps}
+  ctaHeading="Ready to build lasting cultural authority?"
+/>
