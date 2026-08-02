@@ -2,8 +2,10 @@
 body {
   margin: 0; background: var(--sh-black); color: var(--sh-white);
   font-family: var(--font-sans); -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
+/* `clip`, not `hidden`: hidden forces the other axis to `auto`, turning the
+   viewport into a scroll container and breaking sticky (#hero, .scard, .proc-pin). */
+html, body { overflow-x: clip; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
@@ -154,7 +156,7 @@ body.hero-orange #orb-a { display: none; }
 .feat-top { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; max-width: 1280px; margin: 0 auto 28px; flex-wrap: wrap; }
 .feat-top .kicker { color: var(--sh-gray-500); }
 main > section#featured { position: relative; z-index: 50; }
-.feat-marquee { display: flex; overflow-x: hidden; overflow-y: visible; padding-top: 190px; margin-top: -146px; user-select: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.feat-marquee { display: flex; overflow-x: clip; overflow-y: visible; padding-top: 190px; margin-top: -146px; user-select: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
 .feat-track { display: flex; flex: none; align-items: center; gap: clamp(40px, 6vw, 90px); padding-right: clamp(40px, 6vw, 90px); animation: marquee 30s linear infinite; }
 .feat-marquee:hover .feat-track { animation-play-state: paused; }
 .feat-logo { font-size: clamp(20px, 2.6vw, 34px); font-weight: var(--weight-semibold); letter-spacing: -.02em; color: var(--sh-gray-300); transition: color .35s var(--ease-out), transform .35s var(--ease-out); cursor: default; position: relative; text-decoration: none; display: inline-block; }
@@ -191,7 +193,13 @@ body.reveal-on #proj-reveal { opacity: 1; transform: translate(-50%, -50%) scale
 #services { background: var(--sh-white); color: var(--sh-black); padding: clamp(70px, 10vw, 130px) clamp(20px, 6vw, 96px) clamp(70px, 8vw, 110px); }
 .sec-head.light .kicker { color: var(--sh-gray-500); }
 .sec-head.light h2 { color: var(--sh-black); }
+/* Trailing runway: a sticky card can never be pushed past its containing block's
+   bottom edge, so without this the last card has a zero-length sticky range and
+   never pins while the first one releases at the same instant. */
 .stack { max-width: 1180px; margin: 0 auto; }
+/* Real box, not padding: sticky is clamped to the containing block's content
+   box, so trailing padding buys the last card no runway and it never pins. */
+.stack::after { content: ""; display: block; height: 60vh; }
 .scard { position: sticky; top: 92px; border-radius: var(--radius-lg); margin-bottom: 26px; }
 .scard:last-child { margin-bottom: 0; }
 .scard { min-height: 68vh; display: grid; grid-template-columns: 1.05fr .95fr; grid-template-rows: 1fr; overflow: hidden; background: var(--sh-white); color: var(--sh-black); box-shadow: var(--shadow-card); transition: box-shadow .5s var(--ease-out); }
@@ -217,7 +225,13 @@ body.reveal-on #proj-reveal { opacity: 1; transform: translate(-50%, -50%) scale
 .scard:hover .s-canvas .cv-arrow { transform: translate(4px, -4px); }
 .s-canvas .cv-num { position: relative; align-self: flex-end; font-size: clamp(120px, 17vw, 230px); font-weight: var(--weight-semibold); line-height: .78; letter-spacing: -.04em; transition: transform .5s var(--ease-out); }
 .scard:hover .s-canvas .cv-num { transform: scale(1.06); }
-@media (max-width: 860px) { .scard { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: 0; } .s-canvas { min-height: 220px; order: -1; } }
+/* Mobile: cards are taller than the viewport, so pinning them only crops them —
+   drop the stack and let them scroll normally. */
+@media (max-width: 860px) {
+  .stack::after { display: none; }
+  .scard { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: 0; position: static; top: auto; }
+  .s-canvas { min-height: 220px; order: -1; }
+}
 .scard > * { min-height: 0; }
 
 /* ---------- manifesto ---------- */
@@ -240,7 +254,9 @@ body.reveal-on #proj-reveal { opacity: 1; transform: translate(-50%, -50%) scale
 .mline .serif { font-family: var(--font-serif); font-weight: 400; font-style: italic; }
 
 /* ---------- process / how we work (pinned horizontal gallery) ---------- */
-#process { background: var(--sh-stone-soft); color: var(--sh-black); position: relative; padding: 0; }
+/* `clip` keeps the ambient orbs inside the section without making #process a
+   scroll container, which would break the .proc-pin sticky pin on desktop. */
+#process { background: var(--sh-stone-soft); color: var(--sh-black); position: relative; padding: 0; overflow: clip; }
 .proc-pin-outer { position: relative; min-height: 100vh; }
 .proc-pin { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; display: flex; flex-direction: column; }
 .proc-pin > *:not(.sec-orb) { position: relative; z-index: 1; }
@@ -276,13 +292,17 @@ body.reveal-on #proj-reveal { opacity: 1; transform: translate(-50%, -50%) scale
 .pcard-dark p { color: var(--sh-gray-300); }
 @media (max-width: 860px), (prefers-reduced-motion: reduce) {
   .proc-pin-outer { height: auto !important; min-height: 0; }
-  .proc-pin { position: static; height: auto; overflow: visible; }
+  /* relative, not static: keeps the .sec-orb containing block on .proc-pin */
+  .proc-pin { position: relative; height: auto; overflow: visible; }
   .proc-head { padding-top: clamp(60px, 10vw, 90px); }
   .proc-meter { display: none; }
-  .proc-track-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-width: none; margin-top: 28px; }
+  .proc-track-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scroll-padding-inline-start: clamp(20px, 6vw, 96px); scrollbar-width: none; margin-top: 28px; }
   .proc-track-wrap::-webkit-scrollbar { display: none; }
-  .proc-track { transform: none !important; }
-  .pcard { scroll-snap-align: center; width: 78vw; height: auto; max-height: none; opacity: 1 !important; transform: none !important; }
+  .proc-track { transform: none !important; align-items: stretch; padding-right: 0; }
+  /* scroll containers drop their trailing padding in some engines — use a real box */
+  .proc-track::after { content: ""; flex: 0 0 clamp(20px, 6vw, 96px); }
+  .pcard { scroll-snap-align: start; width: 78vw; height: auto; max-height: none; opacity: 1 !important; transform: none !important; }
+  .pcard-body { flex: 1 1 auto; }
 }
 
 /* ---------- cta ---------- */
@@ -323,6 +343,14 @@ footer { background: var(--sh-black); padding: clamp(70px, 9vw, 120px) clamp(20p
   .f-grid { grid-template-columns: 1fr; gap: 36px; }
   .f-bottom img { height: 72px; }
   .f-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* mobile: cut the per-frame compositing cost that shows up as scroll jitter —
+   a blurred backdrop-filter behind the fixed header plus large animated blurs. */
+@media (max-width: 720px) {
+  header.solid { backdrop-filter: none; background: rgba(0,0,0,.9); }
+  .sec-orb { filter: blur(40px); animation: none; }
+  #cta::before { animation: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

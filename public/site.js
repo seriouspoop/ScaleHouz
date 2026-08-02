@@ -44,7 +44,9 @@
   startHero();
 
   /* ---------- Lenis smooth scroll ---------- */
-  if (!reduced && window.Lenis) {
+  /* pointer-fine only: on touch, Lenis' RAF loop layered over native momentum
+     scrolling reads as jitter rather than smoothing. */
+  if (!reduced && fine && window.Lenis) {
     lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1 });
     function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
     requestAnimationFrame(raf);
