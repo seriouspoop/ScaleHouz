@@ -40,57 +40,40 @@ const logos = [
     <span class="kicker reveal">// Trusted by</span>
   </div>
   <div class="feat-marquee reveal" data-d="1" aria-label="Trusted by">
-    <div class="feat-track">
-      {
-        logos.map((l) => {
-          const Tag = l.link ? "a" : "span";
-          const linkProps = l.link
-            ? { href: l.link, target: "_blank", rel: "noopener noreferrer" }
-            : {};
-          return (
-            <Tag class="feat-logo" {...linkProps}>
-              {l.logo && (
-                <span class="fl-pop">
-                  <Image
-                    src={l.logo}
-                    alt={`${l.name} logo`}
-                    width={360}
-                    loading="eager"
-                    style={l.scale ? `transform: scale(${l.scale})` : undefined}
-                  />
-                </span>
-              )}
-              {l.name}
-            </Tag>
-          );
-        })
-      }
-    </div>
-    <div class="feat-track" aria-hidden="true">
-      {
-        logos.map((l) => {
-          const Tag = l.link ? "a" : "span";
-          const linkProps = l.link
-            ? { href: l.link, target: "_blank", rel: "noopener noreferrer" }
-            : {};
-          return (
-            <Tag class="feat-logo" {...linkProps}>
-              {l.logo && (
-                <span class="fl-pop">
-                  <Image
-                    src={l.logo}
-                    alt={`${l.name} logo`}
-                    width={360}
-                    loading="eager"
-                    style={l.scale ? `transform: scale(${l.scale})` : undefined}
-                  />
-                </span>
-              )}
-              {l.name}
-            </Tag>
-          );
-        })
-      }
-    </div>
+    {
+      /* Second track is the visual duplicate that makes the marquee loop. It is
+         aria-hidden, so its links must also be removed from the tab order. */
+      [false, true].map((clone) => (
+        <div class="feat-track" aria-hidden={clone ? "true" : undefined}>
+          {logos.map((l) => {
+            const Tag = l.link ? "a" : "span";
+            const linkProps = l.link
+              ? {
+                  href: l.link,
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  tabindex: clone ? -1 : undefined,
+                }
+              : {};
+            return (
+              <Tag class="feat-logo" {...linkProps}>
+                {l.logo && (
+                  <span class="fl-pop">
+                    <Image
+                      src={l.logo}
+                      alt={clone ? "" : `${l.name} logo`}
+                      width={360}
+                      loading="eager"
+                      style={l.scale ? `transform: scale(${l.scale})` : undefined}
+                    />
+                  </span>
+                )}
+                {l.name}
+              </Tag>
+            );
+          })}
+        </div>
+      ))
+    }
   </div>
 </section>

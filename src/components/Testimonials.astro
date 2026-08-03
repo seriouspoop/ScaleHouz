@@ -1,0 +1,110 @@
+---
+/**
+ * Client testimonials — horizontal snap-scroll rail with prev/next arrows that
+ * auto-disable at each end. Quotes/names/roles are PLACEHOLDERS awaiting real
+ * client words. To add a headshot, drop an <Image> inside the `.av` span; the
+ * slot is an 88px circle and clips overflow.
+ */
+const quotes = [
+  {
+    accent: "var(--sh-cyan)",
+    quote:
+      "They rebuilt our positioning from the ground up and it showed within a quarter. The clarity we got out of the first two weeks was worth the whole engagement.",
+    name: "Client name",
+    role: "Founder · Northway",
+  },
+  {
+    accent: "var(--sh-amber)",
+    quote:
+      "Our launch site went live in six weeks and converted better than the version we spent months on. Nothing about the process felt chaotic.",
+    name: "Client name",
+    role: "Co-founder · Fable & Co",
+  },
+  {
+    accent: "var(--sh-magenta)",
+    quote:
+      "They asked the questions our last agency never did. We came for a rebrand and left with a system the whole team can actually run.",
+    name: "Client name",
+    role: "Brand lead · Atlas Labs",
+  },
+  {
+    accent: "var(--sh-yellow)",
+    quote:
+      "Every deliverable arrived when they said it would. That alone made planning the launch around it possible.",
+    name: "Client name",
+    role: "Founder · Verdi Studio",
+  },
+  {
+    accent: "var(--sh-cyan)",
+    quote:
+      "We wanted a quiet rebrand, not a spectacle. They understood that on day one and the work is better for it.",
+    name: "Client name",
+    role: "Managing director · Kindred",
+  },
+];
+---
+
+<section id="testimonials" data-screen-label="Testimonials">
+  <div class="tst-head">
+    <div class="sec-head light" style="margin:0">
+      <span class="kicker reveal">// Client testimonials</span>
+      <h2 class="reveal" data-d="1">What founders say after working with us.</h2>
+    </div>
+    <div class="tst-side reveal" data-d="2">
+      <span class="tst-note">Placeholder quotes — swap for real client words</span>
+      <div class="tst-nav" aria-label="Testimonial navigation">
+        <button type="button" id="tst-prev" data-cursor aria-label="Previous testimonials">←</button>
+        <button type="button" id="tst-next" data-cursor aria-label="Next testimonials">→</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tst-rail-wrap">
+    <div class="tst-rail" id="tst-rail" tabindex="0" role="region" aria-label="Client testimonials">
+      {
+        quotes.map((t, i) => (
+          <figure class="tst reveal" data-d={i > 0 ? String(Math.min(i, 3)) : undefined} style={`--acc:${t.accent}`}>
+            <span class="q-mark" aria-hidden="true">“</span>
+            <blockquote>{t.quote}</blockquote>
+            <figcaption class="who">
+              <span class="av"></span>
+              <span class="id">
+                <span class="nm">{t.name}</span>
+                <span class="rl">{t.role}</span>
+              </span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="tst-foot reveal" data-d="2">
+    <span class="aw"><em>9.8 / 10</em> average client score</span>
+    <span class="aw"><em>93%</em> of clients return for a second project</span>
+    <span class="aw"><em>24 hours</em> average reply time</span>
+  </div>
+</section>
+
+<script>
+  const rail = document.getElementById('tst-rail');
+  const prev = document.getElementById('tst-prev') as HTMLButtonElement | null;
+  const next = document.getElementById('tst-next') as HTMLButtonElement | null;
+
+  if (rail && prev && next) {
+    const gap = 26;
+    const step = () => {
+      const card = rail.querySelector('.tst');
+      return card ? card.getBoundingClientRect().width + gap : 320;
+    };
+    const sync = () => {
+      prev.disabled = rail.scrollLeft < 8;
+      next.disabled = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 8;
+    };
+    prev.addEventListener('click', () => rail.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next.addEventListener('click', () => rail.scrollBy({ left: step(), behavior: 'smooth' }));
+    rail.addEventListener('scroll', sync, { passive: true });
+    addEventListener('resize', sync);
+    sync();
+  }
+</script>

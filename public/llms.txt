@@ -1,0 +1,18 @@
+# Scale Houz
+
+> Scale Houz is a global branding, web design and marketing agency for D2C brands. Brand strategy, premium websites, and growth marketing engineered to convert.
+
+Scale Houz works with consumer brands across three service tracks: brand architecture, digital experience, and content & authority. Every engagement starts through the onboarding flow.
+
+## Pages
+
+- [Home](https://scalehouz.com/): Agency overview, work, services, process, and contact.
+- [D2C Brand Architecture](https://scalehouz.com/d2c-brand-architecture): Brand strategy, identity systems, packaging strategy, and go-to-market.
+- [D2C Digital Experience](https://scalehouz.com/d2c-digital-experience): Brand and e-commerce websites plus high-converting landing pages.
+- [D2C Content & Authority](https://scalehouz.com/d2c-content-authority): Content strategy, social, production, and creator partnerships.
+- [Start a project](https://scalehouz.com/onboarding): Onboarding questionnaire for new engagements.
+
+## Optional
+
+- [Sitemap](https://scalehouz.com/sitemap-index.xml): Full list of indexed URLs.
+- [robots.txt](https://scalehouz.com/robots.txt): Crawler rules.
