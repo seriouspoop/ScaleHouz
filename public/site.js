@@ -284,65 +284,31 @@
     })(last);
   })();
 
-  /* ---------- how-we-work: pinned horizontal scroll gallery ---------- */
-    (function () {
-      var outer = $('#proc-pin-outer');
-      var wrap = outer && $('.proc-track-wrap', outer);
-      var track = $('#proc-track');
-      var cards = track ? $$('.pcard', track) : [];
-      var barFill = $('#proc-bar-fill');
-      var curEl = $('#proc-cur');
-      var totalEl = $('#proc-total');
-      if (!outer || !wrap || !track || !cards.length) return;
-      if (totalEl) totalEl.textContent = ('0' + cards.length).slice(-2);
-
-      var enabled = false, travel = 0, pace = 0, pTicking = false;
-
-      function isDesktop() { return matchMedia('(min-width:861px)').matches && !reduced; }
-
-      function measure() {
-        var lastCard = cards[cards.length - 1];
-        var contentWidth = lastCard ? (lastCard.offsetLeft + lastCard.offsetWidth) : track.scrollWidth;
-        var fitsOnscreen = contentWidth <= wrap.clientWidth;
-        enabled = isDesktop() && !fitsOnscreen;
-        if (!enabled) {
-          outer.style.height = '';
-          track.style.transform = '';
-          track.style.justifyContent = 'center';
-          cards.forEach(function (c) { c.style.opacity = '1'; c.style.transform = 'none'; });
-          if (barFill) barFill.style.transform = 'scaleX(1)';
-          if (curEl) curEl.textContent = ('0' + cards.length).slice(-2);
-          return;
-        }
-        track.style.justifyContent = '';
-        var centerShift = lastCard.offsetLeft + lastCard.offsetWidth / 2 - wrap.clientWidth / 2;
-        travel = Math.max(track.scrollWidth - wrap.clientWidth, centerShift);
-        pace = travel * 1.15;
-        outer.style.height = (innerHeight + pace) + 'px';
-        tick();
-      }
-
-      function tick() {
-        pTicking = false;
-        if (!enabled) return;
-        var rect = outer.getBoundingClientRect();
-        var p = pace > 0 ? Math.min(1, Math.max(0, -rect.top / pace)) : 0;
-        track.style.transform = 'translate3d(' + (-p * travel) + 'px,0,0)';
-        if (barFill) barFill.style.transform = 'scaleX(' + p + ')';
-        var progress = p * (cards.length - 1);
-        if (curEl) curEl.textContent = ('0' + (Math.round(progress) + 1)).slice(-2);
-        cards.forEach(function (c, i) {
-          var dist = travel > 0 ? Math.min(1, Math.abs(i - progress)) : 0;
-          var active = 0.5 + 0.5 * Math.cos(dist * Math.PI);
-          c.style.opacity = String(0.45 + active * 0.55);
-          c.style.transform = 'scale(' + (0.92 + active * 0.08) + ')';
-        });
-      }
-
-      function onProcScroll() { if (!pTicking) { pTicking = true; requestAnimationFrame(tick); } }
-      addEventListener('scroll', onProcScroll, { passive: true });
-      if (lenis) lenis.on('scroll', onProcScroll);
-      addEventListener('resize', measure);
-      measure();
-    })();
+  /* ---------- how-we-work: timeline spine progress ---------- */
+  (function () {
+    var tl = $('#proc-tl');
+    if (!tl) return;
+    var steps = $$('.tl-step', tl);
+    var pTicking = false;
+    function tick() {
+      pTicking = false;
+      var r = tl.getBoundingClientRect();
+      var p = (innerHeight * 0.7 - r.top) / Math.max(1, r.height);
+      var prog = Math.min(1, Math.max(0, p));
+      tl.style.setProperty('--tlp', prog);
+      var front = r.top + 16 + (r.height - 32) * prog;
+      var act = null;
+      steps.forEach(function (s) {
+        var d = s.querySelector('.tl-dot');
+        var y = d ? d.getBoundingClientRect().top : s.getBoundingClientRect().top;
+        if (y <= front + 2) act = s;
+      });
+      steps.forEach(function (s) { s.classList.toggle('act', s === act); });
+    }
+    function onProcScroll() { if (!pTicking) { pTicking = true; requestAnimationFrame(tick); } }
+    addEventListener('scroll', onProcScroll, { passive: true });
+    if (lenis) lenis.on('scroll', onProcScroll);
+    addEventListener('resize', onProcScroll);
+    tick();
+  })();
   })();
