@@ -48,26 +48,49 @@ const quotes = [
   <div class="tst-head">
     <div class="sec-head light" style="margin:0">
       <span class="kicker reveal">// Client testimonials</span>
-      <h2 class="reveal" data-d="1">What founders say after working with us.</h2>
+      <h2 class="reveal" data-d="1">
+        What founders say after working with us.
+      </h2>
     </div>
     <div class="tst-side reveal" data-d="2">
-      <span class="tst-note">Placeholder quotes — swap for real client words</span>
       <div class="tst-nav" aria-label="Testimonial navigation">
-        <button type="button" id="tst-prev" data-cursor aria-label="Previous testimonials">←</button>
-        <button type="button" id="tst-next" data-cursor aria-label="Next testimonials">→</button>
+        <button
+          type="button"
+          id="tst-prev"
+          data-cursor
+          aria-label="Previous testimonials">←</button
+        >
+        <button
+          type="button"
+          id="tst-next"
+          data-cursor
+          aria-label="Next testimonials">→</button
+        >
       </div>
     </div>
   </div>
 
   <div class="tst-rail-wrap">
-    <div class="tst-rail" id="tst-rail" tabindex="0" role="region" aria-label="Client testimonials">
+    <div
+      class="tst-rail"
+      id="tst-rail"
+      tabindex="0"
+      role="region"
+      aria-label="Client testimonials"
+    >
       {
         quotes.map((t, i) => (
-          <figure class="tst reveal" data-d={i > 0 ? String(Math.min(i, 3)) : undefined} style={`--acc:${t.accent}`}>
-            <span class="q-mark" aria-hidden="true">“</span>
+          <figure
+            class="tst reveal"
+            data-d={i > 0 ? String(Math.min(i, 3)) : undefined}
+            style={`--acc:${t.accent}`}
+          >
+            <span class="q-mark" aria-hidden="true">
+              “
+            </span>
             <blockquote>{t.quote}</blockquote>
             <figcaption class="who">
-              <span class="av"></span>
+              <span class="av" />
               <span class="id">
                 <span class="nm">{t.name}</span>
                 <span class="rl">{t.role}</span>
@@ -87,24 +110,29 @@ const quotes = [
 </section>
 
 <script>
-  const rail = document.getElementById('tst-rail');
-  const prev = document.getElementById('tst-prev') as HTMLButtonElement | null;
-  const next = document.getElementById('tst-next') as HTMLButtonElement | null;
+  const rail = document.getElementById("tst-rail");
+  const prev = document.getElementById("tst-prev") as HTMLButtonElement | null;
+  const next = document.getElementById("tst-next") as HTMLButtonElement | null;
 
   if (rail && prev && next) {
     const gap = 26;
     const step = () => {
-      const card = rail.querySelector('.tst');
+      const card = rail.querySelector(".tst");
       return card ? card.getBoundingClientRect().width + gap : 320;
     };
     const sync = () => {
       prev.disabled = rail.scrollLeft < 8;
-      next.disabled = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 8;
+      next.disabled =
+        rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 8;
     };
-    prev.addEventListener('click', () => rail.scrollBy({ left: -step(), behavior: 'smooth' }));
-    next.addEventListener('click', () => rail.scrollBy({ left: step(), behavior: 'smooth' }));
-    rail.addEventListener('scroll', sync, { passive: true });
-    addEventListener('resize', sync);
+    prev.addEventListener("click", () =>
+      rail.scrollBy({ left: -step(), behavior: "smooth" }),
+    );
+    next.addEventListener("click", () =>
+      rail.scrollBy({ left: step(), behavior: "smooth" }),
+    );
+    rail.addEventListener("scroll", sync, { passive: true });
+    addEventListener("resize", sync);
     sync();
   }
 </script>

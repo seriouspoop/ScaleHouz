@@ -285,60 +285,64 @@
   })();
 
   /* ---------- how-we-work: pinned horizontal scroll gallery ---------- */
-  (function () {
-    var outer = $('#proc-pin-outer');
-    var wrap = outer && $('.proc-track-wrap', outer);
-    var track = $('#proc-track');
-    var cards = track ? $$('.pcard', track) : [];
-    var barFill = $('#proc-bar-fill');
-    var curEl = $('#proc-cur');
-    var totalEl = $('#proc-total');
-    if (!outer || !wrap || !track || !cards.length) return;
-    if (totalEl) totalEl.textContent = ('0' + cards.length).slice(-2);
+    (function () {
+      var outer = $('#proc-pin-outer');
+      var wrap = outer && $('.proc-track-wrap', outer);
+      var track = $('#proc-track');
+      var cards = track ? $$('.pcard', track) : [];
+      var barFill = $('#proc-bar-fill');
+      var curEl = $('#proc-cur');
+      var totalEl = $('#proc-total');
+      if (!outer || !wrap || !track || !cards.length) return;
+      if (totalEl) totalEl.textContent = ('0' + cards.length).slice(-2);
 
-    var enabled = false, travel = 0, pace = 0, pTicking = false;
+      var enabled = false, travel = 0, pace = 0, pTicking = false;
 
-    function isDesktop() { return matchMedia('(min-width:861px)').matches && !reduced; }
+      function isDesktop() { return matchMedia('(min-width:861px)').matches && !reduced; }
 
-    function measure() {
-      enabled = isDesktop();
-      if (!enabled) {
-        outer.style.height = '';
-        track.style.transform = '';
-        cards.forEach(function (c) { c.style.opacity = ''; c.style.transform = ''; });
-        if (barFill) barFill.style.transform = '';
-        if (curEl) curEl.textContent = '01';
-        return;
+      function measure() {
+        var lastCard = cards[cards.length - 1];
+        var contentWidth = lastCard ? (lastCard.offsetLeft + lastCard.offsetWidth) : track.scrollWidth;
+        var fitsOnscreen = contentWidth <= wrap.clientWidth;
+        enabled = isDesktop() && !fitsOnscreen;
+        if (!enabled) {
+          outer.style.height = '';
+          track.style.transform = '';
+          track.style.justifyContent = 'center';
+          cards.forEach(function (c) { c.style.opacity = '1'; c.style.transform = 'none'; });
+          if (barFill) barFill.style.transform = 'scaleX(1)';
+          if (curEl) curEl.textContent = ('0' + cards.length).slice(-2);
+          return;
+        }
+        track.style.justifyContent = '';
+        var centerShift = lastCard.offsetLeft + lastCard.offsetWidth / 2 - wrap.clientWidth / 2;
+        travel = Math.max(track.scrollWidth - wrap.clientWidth, centerShift);
+        pace = travel * 1.15;
+        outer.style.height = (innerHeight + pace) + 'px';
+        tick();
       }
-      var lastCard = cards[cards.length - 1];
-      var centerShift = lastCard.offsetLeft + lastCard.offsetWidth / 2 - wrap.clientWidth / 2;
-      travel = Math.max(0, track.scrollWidth - wrap.clientWidth, centerShift);
-      pace = travel * 1.15;
-      outer.style.height = (innerHeight + pace) + 'px';
-      tick();
-    }
 
-    function tick() {
-      pTicking = false;
-      if (!enabled) return;
-      var rect = outer.getBoundingClientRect();
-      var p = pace > 0 ? Math.min(1, Math.max(0, -rect.top / pace)) : 0;
-      track.style.transform = 'translate3d(' + (-p * travel) + 'px,0,0)';
-      if (barFill) barFill.style.transform = 'scaleX(' + p + ')';
-      if (curEl) curEl.textContent = ('0' + (Math.round(p * (cards.length - 1)) + 1)).slice(-2);
-      var wrapMid = wrap.clientWidth / 2;
-      cards.forEach(function (c) {
-        var center = c.offsetLeft + c.offsetWidth / 2 - p * travel;
-        var norm = wrapMid > 0 ? Math.min(1, Math.abs(center - wrapMid) / wrapMid) : 0;
-        c.style.opacity = String(1 - norm * 0.55);
-        c.style.transform = 'scale(' + (1 - norm * 0.08) + ')';
-      });
-    }
+      function tick() {
+        pTicking = false;
+        if (!enabled) return;
+        var rect = outer.getBoundingClientRect();
+        var p = pace > 0 ? Math.min(1, Math.max(0, -rect.top / pace)) : 0;
+        track.style.transform = 'translate3d(' + (-p * travel) + 'px,0,0)';
+        if (barFill) barFill.style.transform = 'scaleX(' + p + ')';
+        var progress = p * (cards.length - 1);
+        if (curEl) curEl.textContent = ('0' + (Math.round(progress) + 1)).slice(-2);
+        cards.forEach(function (c, i) {
+          var dist = travel > 0 ? Math.min(1, Math.abs(i - progress)) : 0;
+          var active = 0.5 + 0.5 * Math.cos(dist * Math.PI);
+          c.style.opacity = String(0.45 + active * 0.55);
+          c.style.transform = 'scale(' + (0.92 + active * 0.08) + ')';
+        });
+      }
 
-    function onProcScroll() { if (!pTicking) { pTicking = true; requestAnimationFrame(tick); } }
-    addEventListener('scroll', onProcScroll, { passive: true });
-    if (lenis) lenis.on('scroll', onProcScroll);
-    addEventListener('resize', measure);
-    measure();
+      function onProcScroll() { if (!pTicking) { pTicking = true; requestAnimationFrame(tick); } }
+      addEventListener('scroll', onProcScroll, { passive: true });
+      if (lenis) lenis.on('scroll', onProcScroll);
+      addEventListener('resize', measure);
+      measure();
+    })();
   })();
-})();

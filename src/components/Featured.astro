@@ -13,6 +13,7 @@ import beeroLogo from "../assets/logo/clients/beero.jpeg";
 import ritualLogo from "../assets/logo/clients/ritual.jpeg";
 import yksLogo from "../assets/logo/clients/yks.png";
 import woodyTalesLogo from "../assets/logo/clients/woody-tales.png";
+import nexgenLogo from "../assets/logo/clients/nexgen.png";
 
 const logos = [
   {
@@ -21,7 +22,11 @@ const logos = [
     link: "https://vrittivogue.com/",
   },
   { name: "Beero", logo: beeroLogo },
-  { name: "Woody Tales", logo: woodyTalesLogo, link: "https://www.woodytales.in/" },
+  {
+    name: "Woody Tales",
+    logo: woodyTalesLogo,
+    link: "https://www.woodytales.in/",
+  },
   { name: "Teakmont" },
   { name: "Krruz", logo: kruzzLogo },
   {
@@ -32,6 +37,7 @@ const logos = [
   },
   { name: "Sadhoo", logo: sadhooLogo },
   { name: "Ritual", logo: ritualLogo },
+  { name: "Nexgen Club", logo: nexgenLogo, link: "https://nexgenclub.in" },
 ];
 ---
 
@@ -64,7 +70,9 @@ const logos = [
                       alt={clone ? "" : `${l.name} logo`}
                       width={360}
                       loading="eager"
-                      style={l.scale ? `transform: scale(${l.scale})` : undefined}
+                      style={
+                        l.scale ? `transform: scale(${l.scale})` : undefined
+                      }
                     />
                   </span>
                 )}
