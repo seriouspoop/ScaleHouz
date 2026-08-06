@@ -1638,25 +1638,6 @@ body.reveal-on #proj-reveal {
   color: var(--sh-gray-500);
 }
 
-.proc-dot-node {
-  width: 40px;
-  height: 40px;
-  flex: none;
-  border-radius: 50%;
-  border: 1.5px solid rgba(0, 0, 0, 0.16);
-  background: var(--sh-white);
-  display: grid;
-  place-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.proc-dot-node .dot-inner {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--sh-black);
-}
-
 /* Staircase: four equal-width cards on a uniform diagonal ladder */
 .rm {
   position: relative;
