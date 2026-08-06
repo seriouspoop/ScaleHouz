@@ -283,32 +283,4 @@
       requestAnimationFrame(loop);
     })(last);
   })();
-
-  /* ---------- how-we-work: timeline spine progress ---------- */
-  (function () {
-    var tl = $('#proc-tl');
-    if (!tl) return;
-    var steps = $$('.tl-step', tl);
-    var pTicking = false;
-    function tick() {
-      pTicking = false;
-      var r = tl.getBoundingClientRect();
-      var p = (innerHeight * 0.7 - r.top) / Math.max(1, r.height);
-      var prog = Math.min(1, Math.max(0, p));
-      tl.style.setProperty('--tlp', prog);
-      var front = r.top + 16 + (r.height - 32) * prog;
-      var act = null;
-      steps.forEach(function (s) {
-        var d = s.querySelector('.tl-dot');
-        var y = d ? d.getBoundingClientRect().top : s.getBoundingClientRect().top;
-        if (y <= front + 2) act = s;
-      });
-      steps.forEach(function (s) { s.classList.toggle('act', s === act); });
-    }
-    function onProcScroll() { if (!pTicking) { pTicking = true; requestAnimationFrame(tick); } }
-    addEventListener('scroll', onProcScroll, { passive: true });
-    if (lenis) lenis.on('scroll', onProcScroll);
-    addEventListener('resize', onProcScroll);
-    tick();
-  })();
   })();
