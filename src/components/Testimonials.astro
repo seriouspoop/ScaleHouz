@@ -1,0 +1,253 @@
+---
+/**
+ * Client testimonials — horizontal snap-scroll rail that auto-advances every 5s
+ * and loops endlessly (the cards are cloned once, clones are aria-hidden).
+ * Arrows never disable; they wrap. Entries without an `img` are PLACEHOLDERS
+ * awaiting real client words; their `.av` slot renders as an empty 88px circle.
+ */
+import { Image } from "astro:assets";
+import sohamPhoto from "../assets/testimonials/soham-chatterjee.jpeg";
+import satvikPhoto from "../assets/testimonials/satvik.jpeg";
+
+const quotes = [
+  {
+    accent: "var(--sh-magenta)",
+    quote:
+      "We started working with Scalehouz one and a half months back and the kind of support and guidance Scalehouz has provided us in our initial days is something which would make me as a CEO keep working with Scalehouz for a significant period of time. Their flexibility and understanding in each and every aspect irrespective of the scale of the buisness is something which is not easily found.",
+    name: "Soham Chatterjee",
+    role: "Founder & CEO",
+    company: "Sadhoo Cosmetics",
+    img: sohamPhoto,
+  },
+  {
+    accent: "var(--sh-amber)",
+    quote:
+      "Working with Scalehouz has changed the way we think about our brand. They helped us understand our customers better, improve our packaging, and create an emotional connection that goes beyond the product itself. Their insights have played an important role in shaping the experience we want every customer to have.",
+    name: "Satvik",
+    role: "Founder",
+    company: "WoodyTales",
+    url: "https://www.woodytales.in/",
+    img: satvikPhoto,
+  },
+  {
+    accent: "var(--sh-cyan)",
+    quote:
+      "They rebuilt our positioning from the ground up and it showed within a quarter. The clarity we got out of the first two weeks was worth the whole engagement.",
+    name: "Client name",
+    role: "Founder",
+    company: "Northway",
+  },
+  {
+    accent: "var(--sh-amber)",
+    quote:
+      "Our launch site went live in six weeks and converted better than the version we spent months on. Nothing about the process felt chaotic.",
+    name: "Client name",
+    role: "Co-founder",
+    company: "Fable & Co",
+  },
+  {
+    accent: "var(--sh-yellow)",
+    quote:
+      "They asked the questions our last agency never did. We came for a rebrand and left with a system the whole team can actually run.",
+    name: "Client name",
+    role: "Brand lead",
+    company: "Atlas Labs",
+  },
+  {
+    accent: "var(--sh-magenta)",
+    quote:
+      "Every deliverable arrived when they said it would. That alone made planning the launch around it possible.",
+    name: "Client name",
+    role: "Founder",
+    company: "Verdi Studio",
+  },
+  {
+    accent: "var(--sh-cyan)",
+    quote:
+      "We wanted a quiet rebrand, not a spectacle. They understood that on day one and the work is better for it.",
+    name: "Client name",
+    role: "Managing director",
+    company: "Kindred",
+  },
+];
+---
+
+<section id="testimonials" data-screen-label="Testimonials">
+  <div class="tst-head">
+    <div class="sec-head light" style="margin:0">
+      <span class="kicker reveal">// Client testimonials</span>
+      <h2 class="reveal" data-d="1">
+        What founders say after working with us.
+      </h2>
+    </div>
+    <div class="tst-side reveal" data-d="2">
+      <div class="tst-nav" aria-label="Testimonial navigation">
+        <button
+          type="button"
+          id="tst-prev"
+          data-cursor
+          aria-label="Previous testimonials"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <button
+          type="button"
+          id="tst-next"
+          data-cursor
+          aria-label="Next testimonials"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tst-rail-wrap">
+    <div
+      class="tst-rail"
+      id="tst-rail"
+      tabindex="0"
+      role="region"
+      aria-label="Client testimonials"
+    >
+      {
+        quotes.map((t, i) => (
+          <figure
+            class="tst reveal"
+            data-d={i > 0 ? String(Math.min(i, 3)) : undefined}
+            style={`--acc:${t.accent}`}
+          >
+            <span class="q-mark" aria-hidden="true">
+              “
+            </span>
+            <blockquote>{t.quote}</blockquote>
+            <figcaption class="who">
+              <span class="av">
+                {t.img && (
+                  <Image
+                    src={t.img}
+                    alt={t.name}
+                    width={176}
+                    height={176}
+                    loading="lazy"
+                  />
+                )}
+              </span>
+              <span class="id">
+                <span class="nm">{t.name}</span>
+                <span class="rl">{t.role}</span>
+                {t.url ? (
+                  <a
+                    class="rl co"
+                    href={t.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-cursor
+                  >
+                    {t.company}
+                  </a>
+                ) : (
+                  <span class="rl co">{t.company}</span>
+                )}
+              </span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="tst-foot reveal" data-d="2">
+    <span class="aw"><em>9.8 / 10</em> average client score</span>
+    <span class="aw"><em>93%</em> of clients return for a second project</span>
+    <span class="aw"><em>24 hours</em> average reply time</span>
+  </div>
+</section>
+
+<script>
+  const rail = document.getElementById("tst-rail");
+  const prev = document.getElementById("tst-prev") as HTMLButtonElement | null;
+  const next = document.getElementById("tst-next") as HTMLButtonElement | null;
+
+  if (rail && prev && next) {
+    const gap = 26;
+    const step = () => {
+      const card = rail.querySelector(".tst");
+      return card ? card.getBoundingClientRect().width + gap : 320;
+    };
+
+    /* One full set of clones after the originals, so the rail can always keep
+       moving forward and be silently rewound once it passes the seam. */
+    const origCount = rail.querySelectorAll(".tst").length;
+    rail.querySelectorAll(".tst").forEach((card) => {
+      const clone = card.cloneNode(true) as HTMLElement;
+      clone.classList.remove("reveal");
+      clone.classList.add("in");
+      clone.setAttribute("aria-hidden", "true");
+      rail.appendChild(clone);
+    });
+
+    const loopWidth = () => step() * origCount;
+    /* Jump without smooth scroll or snap so the reset is invisible. */
+    const jump = (left: number) => {
+      rail.style.scrollSnapType = "none";
+      rail.scrollLeft = left;
+      rail.style.scrollSnapType = "";
+    };
+    const normalize = () => {
+      const w = loopWidth();
+      if (rail.scrollLeft >= w) jump(rail.scrollLeft - w);
+    };
+
+    let timer: number | null = null;
+    let paused = false;
+
+    const advance = (force?: boolean) => {
+      if (paused && !force) return;
+      normalize();
+      rail.scrollBy({ left: step(), behavior: "smooth" });
+    };
+    const start = () => {
+      if (!timer) timer = window.setInterval(advance, 5000);
+    };
+    const restart = () => {
+      if (timer) clearInterval(timer);
+      timer = null;
+      start();
+    };
+
+    prev.addEventListener("click", () => {
+      /* At the head, hop forward a full cycle first so backwards never stalls. */
+      if (rail.scrollLeft < step()) jump(rail.scrollLeft + loopWidth());
+      rail.scrollBy({ left: -step(), behavior: "smooth" });
+    });
+    next.addEventListener("click", () => advance(true));
+    [prev, next].forEach((b) => b.addEventListener("click", restart));
+
+    (["mouseenter", "focusin", "pointerdown"] as const).forEach((ev) =>
+      rail.addEventListener(ev, () => (paused = true), { passive: true }),
+    );
+    /* touchend/pointerup included: without them a tap on mobile pauses forever. */
+    (
+      ["mouseleave", "focusout", "pointerup", "pointercancel", "touchend"] as const
+    ).forEach((ev) =>
+      rail.addEventListener(
+        ev,
+        () => {
+          paused = false;
+          restart();
+        },
+        { passive: true },
+      ),
+    );
+    document.addEventListener("visibilitychange", () => {
+      paused = document.hidden;
+    });
+
+    start();
+  }
+</script>

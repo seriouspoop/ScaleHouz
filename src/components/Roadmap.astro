@@ -1,0 +1,241 @@
+---
+/**
+ * Roadmap — four content-hugging cards stepped on a uniform diagonal, joined by
+ * a dotted SVG connector overlay that is measured from the cards' untransformed
+ * offset geometry (so the reveal transform never skews the wires).
+ */
+const steps = [
+  {
+    acc: "var(--sh-cyan)",
+    when: "1 Week",
+    num: "01",
+    h: "Discovery &amp; strategy",
+    p: "We analyse your brand, market and audience to build a solid foundation and a clear plan. You get positioning, messaging and a scoped timeline before design starts.",
+  },
+  {
+    acc: "var(--sh-yellow)",
+    when: "2 Weeks",
+    num: "02",
+    h: "Design &amp; prototyping",
+    p: "We craft the journey and high-fidelity prototypes to test, refine, and approve. You review every screen on desktop and mobile before we build.",
+    dark: true,
+  },
+  {
+    acc: "var(--sh-amber)",
+    when: "2 Weeks",
+    num: "03",
+    h: "Build &amp; motion",
+    p: "Pixel-perfect build with smooth interactions, responsive layouts, fast performance. Accessibility and CMS handover are part of the build, not an afterthought.",
+  },
+  {
+    acc: "var(--sh-magenta);--acc-ink:var(--sh-white)",
+    when: "1 Week",
+    num: "04",
+    h: "Launch &amp; support",
+    p: "Rigorous QA, SEO, launch — then we stay close as you grow. We monitor performance, train your team and handle the first round of changes.",
+    dark: true,
+  },
+];
+---
+
+<section id="roadmap" data-screen-label="Roadmap">
+  <div class="proc-head">
+    <div class="sec-head light" style="max-width:680px;margin:0">
+      <span class="kicker reveal morph">// Roadmap</span>
+      <h2 class="reveal morph" data-d="1">
+        From brief to launch,<br />without the chaos.
+      </h2>
+    </div>
+    <div class="proc-total reveal morph" data-d="2">
+      <span class="n">6 weeks</span>
+      <span class="l">Typical timeline</span>
+    </div>
+  </div>
+
+  <ol class="rm" id="proc-tl">
+    <svg class="rm-wires" id="rm-wires" aria-hidden="true"></svg>
+    {
+      steps.map((s, i) => (
+        <li
+          class:list={["rm-step", "morph", { dark: s.dark }]}
+          data-step={String(i)}
+          style={`--acc:${s.acc}`}
+        >
+          <div class="rm-card">
+            <div class="rm-when">
+              <span>{s.when}</span>
+            </div>
+            <div class="rm-txt">
+              <div class="rm-top">
+                <span class="rm-chip">{s.num}</span>
+                <h3 set:html={s.h} />
+              </div>
+              <p>{s.p}</p>
+            </div>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<script>
+  const rm = document.getElementById("proc-tl");
+  const svg = document.getElementById("rm-wires") as unknown as SVGElement;
+
+  if (rm && svg) {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const box = (el: HTMLElement) => {
+      let x = 0,
+        y = 0,
+        n: HTMLElement | null = el;
+      while (n && n !== rm) {
+        x += n.offsetLeft;
+        y += n.offsetTop;
+        n = n.offsetParent as HTMLElement | null;
+      }
+      return { x, y, w: el.offsetWidth, h: el.offsetHeight };
+    };
+
+    let maskPaths: SVGPathElement[] = [];
+    let heads: SVGElement[] = [];
+    let pathLengths: number[] = [];
+    const steps = Array.from(rm.querySelectorAll<HTMLElement>(".rm-step"));
+
+    const draw = () => {
+      const cards = rm.querySelectorAll<HTMLElement>(".rm-step .rm-card");
+      svg.setAttribute("viewBox", `0 0 ${rm.offsetWidth} ${rm.offsetHeight}`);
+      
+      if (getComputedStyle(svg).display === "none" || cards.length < 2) {
+        svg.innerHTML = "";
+        maskPaths = [];
+        heads = [];
+        pathLengths = [];
+        steps.forEach((s) => s.classList.add("in"));
+        return;
+      }
+
+      const R = 14;
+      let defsHTML = "<defs>";
+      let wiresHTML = "";
+
+      for (let i = 0; i < cards.length - 1; i++) {
+        const a = box(cards[i]);
+        const c = box(cards[i + 1]);
+        const right = c.x > a.x;
+        const x1 = right ? a.x + a.w : a.x;
+        const y1 = a.y + a.h / 2;
+        const x2 = c.x + c.w / 2;
+        const y2 = c.y - 10;
+        const s2 = right ? 1 : -1;
+        const r = Math.min(R, Math.abs(x2 - x1) / 2, Math.abs(y2 - y1) / 2);
+        
+        const d = `M${x1} ${y1} H${x2 - s2 * r} Q${x2} ${y1} ${x2} ${y1 + r} V${y2}`;
+        const maskId = `rm-mask-${i}`;
+
+        defsHTML += `<mask id="${maskId}" x="0" y="0" width="100%" height="100%" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse"><path id="rm-mask-path-${i}" d="${d}" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round"></path></mask>`;
+        wiresHTML += `<g class="rm-wire-group" data-wire="${i}"><path d="${d}" mask="url(#${maskId})" class="rm-wire-line"></path><polyline class="rm-wire-head" id="rm-head-${i}" points="${x2 - 4.5},${y2 - 4.5} ${x2},${y2} ${x2 + 4.5},${y2 - 4.5}" style="transform-origin: ${x2}px ${y2}px;"></polyline></g>`;
+      }
+
+      defsHTML += "</defs>";
+      svg.innerHTML = defsHTML + wiresHTML;
+
+      maskPaths = [];
+      heads = [];
+      pathLengths = [];
+
+      for (let i = 0; i < cards.length - 1; i++) {
+        const mp = svg.querySelector<SVGPathElement>(`#rm-mask-path-${i}`);
+        const head = svg.querySelector<SVGElement>(`#rm-head-${i}`);
+        if (mp) {
+          const len = mp.getTotalLength();
+          mp.style.setProperty("stroke-dasharray", `${len} ${len}`, "important");
+          mp.style.setProperty("stroke-dashoffset", reduced ? "0" : `${len}`, "important");
+          maskPaths.push(mp);
+          pathLengths.push(len);
+        }
+        if (head) heads.push(head);
+      }
+
+      updateScroll();
+    };
+
+    let ticking = false;
+
+    const updateScroll = () => {
+      if (getComputedStyle(svg).display === "none" || reduced) {
+        steps.forEach((s) => s.classList.add("in"));
+        return;
+      }
+
+      const rect = rm.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // Card 01 appears when section enters viewport
+      if (rect.top <= vh * 0.85) {
+        steps[0]?.classList.add("in");
+      } else {
+        steps[0]?.classList.remove("in");
+      }
+
+      /* 
+         Accelerated Waterfall progress P in [0, 1] through the roadmap section.
+      */
+      const startY = vh * 0.85;
+      const endY = vh * 0.48;
+      const totalDist = rect.height * 0.7 + (startY - endY);
+      const currentDist = startY - rect.top;
+      const P = Math.max(0, Math.min(1, currentDist / totalDist));
+
+      const numWires = maskPaths.length; // 3
+      for (let i = 0; i < numWires; i++) {
+        const mp = maskPaths[i];
+        const head = heads[i];
+        const nextStep = steps[i + 1];
+        const len = pathLengths[i];
+
+        // Sequential windows for each wire segment
+        const wStart = i / numWires;
+        const wEnd = (i + 0.95) / numWires;
+        const segProgress = Math.max(0, Math.min(1, (P - wStart) / (wEnd - wStart)));
+
+        if (mp && len) {
+          mp.style.setProperty("stroke-dashoffset", `${len * (1 - segProgress)}`, "important");
+        }
+
+        if (segProgress >= 0.96) {
+          head?.classList.add("active");
+        } else {
+          head?.classList.remove("active");
+        }
+
+        // Card reveals ONLY when wire segment has fully grown to destination (>=98%)
+        if (segProgress >= 0.98) {
+          nextStep?.classList.add("in");
+        } else {
+          nextStep?.classList.remove("in");
+        }
+      }
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateScroll);
+      }
+    };
+
+    draw();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", draw);
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(draw);
+      ro.observe(rm);
+      rm.querySelectorAll(".rm-card").forEach((c) => ro.observe(c));
+    }
+    if (document.fonts?.ready) document.fonts.ready.then(draw);
+  }
+</script>

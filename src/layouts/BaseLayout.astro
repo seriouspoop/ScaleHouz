@@ -46,8 +46,10 @@ const orgSchema = {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Order matters: Chromium uses the LAST rel="icon", so the legacy .ico
+       goes first and the SVG last. -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="canonical" href={canonical} />
   <link rel="sitemap" href="/sitemap-index.xml" />
 

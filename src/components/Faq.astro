@@ -1,0 +1,104 @@
+---
+/**
+ * FAQ — sticky intro column beside a single-open accordion. Answers animate via
+ * a 0fr→1fr grid-row transition so no fixed heights are needed.
+ */
+const faqs = [
+  {
+    q: "How do you make sure our brand doesn't look like everyone else's?",
+    a: "Honestly, this is the thing we care about most. Before we touch any design, we spend real time understanding your brand, your audience, and what is actually happening in your category. That groundwork is what keeps the final result from feeling like a template with your logo pasted on. Strategy comes first, and everything else is built on top of it.",
+  },
+  {
+    q: "What makes ScaleHouz different from other agencies we could hire?",
+    a: "A lot of agencies just solve the immediate problem in front of them. If you ask for a new logo, you get a new logo. We prefer to zoom out a bit more. Your brand, website, and content usually break down together when they are not built to work as a single system. That is exactly how we approach our projects right from the start.",
+  },
+  {
+    q: "How do we know this won't just look nice but actually work?",
+    a: "A beautiful website that does not convert simply is not doing its job. We keep that front of mind from the very first sketch. Growth and conversion are not just an afterthought we bolt on at the end. They are a core part of our thinking from day one.",
+  },
+  {
+    q: "We are a small, early stage brand, so will we actually get real attention?",
+    a: "Yes, you genuinely will. You will not be handed off to a junior team once the deal is signed. You get to work directly with the people who founded and run Scale Houz, from the first call all the way through to launch.",
+  },
+  {
+    q: "How do you keep things from feeling generic or trend chasing?",
+    a: "We try to build things that still feel right in a couple of years, not just this quarter. That means your positioning, identity, and packaging are shaped around what makes your brand actually yours. We do not just copy whatever is trending on Pinterest this month.",
+  },
+  {
+    q: "How do you make sure the final product performs and does not just look good in a portfolio?",
+    a: "We do the research before we design, not after. Understanding your market and audience upfront means the decisions we make are aimed at real outcomes. We are not just doing what looks impressive in a pitch deck.",
+  },
+  {
+    q: "Do you actually get our industry, or will we be explaining the basics?",
+    a: "We have spent real time in the D2C space. We have hands on experience in fragrance and lifestyle brands specifically, so you are not starting the conversation from zero.",
+  },
+  {
+    q: "Do you disappear once the site goes live?",
+    a: "No, that is actually where we like to stay involved. Launch is just the starting line for us. We keep an eye on how things are performing and stick around to help you build on that momentum.",
+  },
+  {
+    q: "If you had to sum up what working with you feels like?",
+    a: "It is your growth, in thoughtful hands. You can expect real conversations, research backed decisions, and a team that is still around after launch instead of just before it.",
+  },
+];
+---
+
+<section id="faq" data-screen-label="FAQ">
+  <div class="faq-wrap">
+    <div class="faq-aside">
+      <span class="kicker reveal">// Common questions</span>
+      <h2 class="reveal" data-d="1">
+        Frequently asked<span style="color:var(--sh-amber)">.</span>
+      </h2>
+      <p class="reveal" data-d="2">
+        Why founders choose Scale Houz — how we work, who you actually work
+        with, and what happens after launch.
+      </p>
+      <span class="faq-ask reveal" data-d="3">
+        Something not covered? <a href="mailto:hello@scalehouz.com" data-cursor
+          >Ask us directly</a
+        >
+      </span>
+    </div>
+    <div class="faq-list reveal" data-d="1" id="faq-list">
+      {
+        faqs.map((f, i) => (
+          <div class:list={["faq-item", { open: i === 0 }]}>
+            <button
+              type="button"
+              class="faq-q"
+              data-cursor
+              aria-expanded={i === 0 ? "true" : "false"}
+            >
+              {f.q}
+              <span class="faq-sign" aria-hidden="true" />
+            </button>
+            <div class="faq-a">
+              <div>
+                <p>{f.a}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  const list = document.getElementById("faq-list");
+  list?.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest(".faq-q");
+    if (!btn) return;
+    const item = btn.parentElement!;
+    const wasOpen = item.classList.contains("open");
+    list.querySelectorAll(".faq-item.open").forEach((i) => {
+      i.classList.remove("open");
+      i.querySelector(".faq-q")!.setAttribute("aria-expanded", "false");
+    });
+    if (!wasOpen) {
+      item.classList.add("open");
+      btn.setAttribute("aria-expanded", "true");
+    }
+  });
+</script>
