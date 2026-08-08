@@ -1,9 +1,9 @@
 ---
 /**
- * Trusted-by wordmarks. Set `logo` to an imported src/assets image to enable
- * the hover-popup mark for that company; leave it unset to keep the
- * wordmark plain (no popup). Set `link` to the client's website to make the
- * logo clickable; leave it unset for no link.
+ * Trusted-by marks. Set `logo` to an imported src/assets image to show that
+ * company's mark; leave it unset to fall back to the plain wordmark. Set
+ * `link` to the client's website to make the logo clickable; leave it unset
+ * for no link. `scale` nudges marks whose artwork sits small in its canvas.
  */
 import { Image } from "astro:assets";
 import sadhooLogo from "../assets/logo/clients/sadhoo.svg";
@@ -20,24 +20,31 @@ const logos = [
     name: "Vritti Vogue",
     logo: vrittiVogueLogo,
     link: "https://vrittivogue.com/",
+    scale: 1,
   },
-  { name: "Beero", logo: beeroLogo },
+  { name: "Beero", logo: beeroLogo, scale: 1.05 },
   {
     name: "Woody Tales",
     logo: woodyTalesLogo,
     link: "https://www.woodytales.in/",
+    scale: 1.35,
   },
   { name: "Teakmont" },
-  { name: "Krruz", logo: kruzzLogo },
+  { name: "Krruz", logo: kruzzLogo, scale: 0.88 },
   {
     name: "YKS Ventures",
     logo: yksLogo,
     link: "https://www.yksventures.com/",
-    scale: 1.8,
+    scale: 1.6,
   },
-  { name: "Sadhoo", logo: sadhooLogo },
-  { name: "Ritual", logo: ritualLogo },
-  { name: "Nexgen Club", logo: nexgenLogo, link: "https://nexgenclub.in" },
+  { name: "Sadhoo", logo: sadhooLogo, scale: 1.1 },
+  { name: "Ritual", logo: ritualLogo, scale: 1.35 },
+  {
+    name: "Nexgen Club",
+    logo: nexgenLogo,
+    link: "https://nexgenclub.in",
+    scale: 1,
+  },
 ];
 ---
 
@@ -62,21 +69,22 @@ const logos = [
                 }
               : {};
             return (
-              <Tag class="feat-logo" {...linkProps}>
-                {l.logo && (
-                  <span class="fl-pop">
-                    <Image
-                      src={l.logo}
-                      alt={clone ? "" : `${l.name} logo`}
-                      width={360}
-                      loading="eager"
-                      style={
-                        l.scale ? `transform: scale(${l.scale})` : undefined
-                      }
-                    />
-                  </span>
+              <Tag
+                class={l.logo ? "feat-logo" : "feat-logo is-wordmark"}
+                title={l.name}
+                {...linkProps}
+              >
+                {l.logo ? (
+                  <Image
+                    src={l.logo}
+                    alt={clone ? "" : `${l.name} logo`}
+                    width={360}
+                    loading="eager"
+                    style={l.scale ? `transform: scale(${l.scale})` : undefined}
+                  />
+                ) : (
+                  l.name
                 )}
-                {l.name}
               </Tag>
             );
           })}

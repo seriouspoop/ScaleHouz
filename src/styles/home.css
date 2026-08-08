@@ -995,9 +995,6 @@ main>section#featured {
 .feat-marquee {
   display: flex;
   overflow-x: clip;
-  overflow-y: visible;
-  padding-top: 190px;
-  margin-top: -146px;
   user-select: none;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
@@ -1017,51 +1014,22 @@ main>section#featured {
 }
 
 .feat-logo {
-  font-size: clamp(20px, 2.6vw, 34px);
-  font-weight: var(--weight-semibold);
-  letter-spacing: -.02em;
-  color: var(--sh-gray-300);
-  transition: color .35s var(--ease-out), transform .35s var(--ease-out);
-  cursor: default;
-  position: relative;
-  text-decoration: none;
-  display: inline-block;
-}
-
-a.feat-logo {
-  cursor: pointer;
-}
-
-.feat-logo:hover {
-  color: var(--sh-black);
-  transform: translateY(-3px);
-  z-index: 20;
-}
-
-.fl-pop {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 14px);
-  transform: translate(-50%, 8px) scale(.94);
-  transform-origin: 50% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .28s var(--ease-out), transform .28s var(--ease-out);
-  width: 260px;
-  height: 160px;
-  padding: 20px 24px;
-  border-radius: 14px;
-  border: 1px solid var(--border-default);
-  background: var(--sh-white);
-  box-shadow: var(--shadow-card);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  z-index: 10;
+  flex: none;
+  /* Fixed box so marks of differing aspect ratios sit on one optical line. */
+  height: clamp(52px, 6vw, 80px);
+  width: clamp(140px, 16vw, 200px);
+  overflow: visible;
+  text-decoration: none;
+  cursor: default;
+  opacity: .75;
+  filter: grayscale(1);
+  transition: opacity .35s var(--ease-out), filter .35s var(--ease-out), transform .35s var(--ease-out);
 }
 
-.fl-pop img {
+.feat-logo img {
   display: block;
   width: auto;
   height: auto;
@@ -1070,28 +1038,23 @@ a.feat-logo {
   object-fit: contain;
 }
 
-.fl-pop::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -5px;
-  width: 10px;
-  height: 10px;
-  background: var(--sh-white);
-  border-right: 1px solid var(--border-default);
-  border-bottom: 1px solid var(--border-default);
-  transform: translateX(-50%) rotate(45deg);
+/* Companies with no supplied mark keep the plain wordmark. */
+.feat-logo.is-wordmark {
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -.02em;
+  color: var(--sh-black);
+  filter: none;
 }
 
-.feat-logo:hover .fl-pop {
+a.feat-logo {
+  cursor: pointer;
+}
+
+.feat-logo:hover {
   opacity: 1;
-  transform: translate(-50%, 0) scale(1);
-}
-
-@media (max-width: 720px) {
-  .fl-pop {
-    display: none;
-  }
+  filter: grayscale(0);
+  transform: translateY(-3px);
 }
 
 /* ---------- projects (interactive list) ---------- */
