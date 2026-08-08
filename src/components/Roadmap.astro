@@ -57,8 +57,8 @@ const steps = [
     {
       steps.map((s, i) => (
         <li
-          class:list={["rm-step", "reveal", "morph", { dark: s.dark }]}
-          data-d={String(i)}
+          class:list={["rm-step", "morph", { dark: s.dark }]}
+          data-step={String(i)}
           style={`--acc:${s.acc}`}
         >
           <div class="rm-card">
@@ -81,11 +81,11 @@ const steps = [
 
 <script>
   const rm = document.getElementById("proc-tl");
-  const svg = document.getElementById("rm-wires");
+  const svg = document.getElementById("rm-wires") as unknown as SVGElement;
 
   if (rm && svg) {
-    /* offsetLeft/Top chain: unlike getBoundingClientRect this ignores the
-       reveal transform, so wires land on the cards' resting positions. */
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const box = (el: HTMLElement) => {
       let x = 0,
         y = 0,
@@ -98,41 +98,144 @@ const steps = [
       return { x, y, w: el.offsetWidth, h: el.offsetHeight };
     };
 
+    let maskPaths: SVGPathElement[] = [];
+    let heads: SVGElement[] = [];
+    let pathLengths: number[] = [];
+    const steps = Array.from(rm.querySelectorAll<HTMLElement>(".rm-step"));
+
     const draw = () => {
       const cards = rm.querySelectorAll<HTMLElement>(".rm-step .rm-card");
       svg.setAttribute("viewBox", `0 0 ${rm.offsetWidth} ${rm.offsetHeight}`);
+      
       if (getComputedStyle(svg).display === "none" || cards.length < 2) {
         svg.innerHTML = "";
+        maskPaths = [];
+        heads = [];
+        pathLengths = [];
+        steps.forEach((s) => s.classList.add("in"));
         return;
       }
+
       const R = 14;
-      let out = "";
+      let defsHTML = "<defs>";
+      let wiresHTML = "";
+
       for (let i = 0; i < cards.length - 1; i++) {
         const a = box(cards[i]);
         const c = box(cards[i + 1]);
         const right = c.x > a.x;
-        /* leave from the previous card's mid-height edge, hop across, then
-           drop onto the next card's centre stopping 10px above it */
         const x1 = right ? a.x + a.w : a.x;
         const y1 = a.y + a.h / 2;
         const x2 = c.x + c.w / 2;
         const y2 = c.y - 10;
         const s2 = right ? 1 : -1;
         const r = Math.min(R, Math.abs(x2 - x1) / 2, Math.abs(y2 - y1) / 2);
-        out += `<path d="M${x1} ${y1} H${x2 - s2 * r} Q${x2} ${y1} ${x2} ${y1 + r} V${y2}"></path>`;
-        out += `<polyline points="${x2 - 4.5},${y2 - 4.5} ${x2},${y2} ${x2 + 4.5},${y2 - 4.5}"></polyline>`;
+        
+        const d = `M${x1} ${y1} H${x2 - s2 * r} Q${x2} ${y1} ${x2} ${y1 + r} V${y2}`;
+        const maskId = `rm-mask-${i}`;
+
+        defsHTML += `<mask id="${maskId}" x="0" y="0" width="100%" height="100%" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse"><path id="rm-mask-path-${i}" d="${d}" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round"></path></mask>`;
+        wiresHTML += `<g class="rm-wire-group" data-wire="${i}"><path d="${d}" mask="url(#${maskId})" class="rm-wire-line"></path><polyline class="rm-wire-head" id="rm-head-${i}" points="${x2 - 4.5},${y2 - 4.5} ${x2},${y2} ${x2 + 4.5},${y2 - 4.5}" style="transform-origin: ${x2}px ${y2}px;"></polyline></g>`;
       }
-      svg.innerHTML = out;
+
+      defsHTML += "</defs>";
+      svg.innerHTML = defsHTML + wiresHTML;
+
+      maskPaths = [];
+      heads = [];
+      pathLengths = [];
+
+      for (let i = 0; i < cards.length - 1; i++) {
+        const mp = svg.querySelector<SVGPathElement>(`#rm-mask-path-${i}`);
+        const head = svg.querySelector<SVGElement>(`#rm-head-${i}`);
+        if (mp) {
+          const len = mp.getTotalLength();
+          mp.style.setProperty("stroke-dasharray", `${len} ${len}`, "important");
+          mp.style.setProperty("stroke-dashoffset", reduced ? "0" : `${len}`, "important");
+          maskPaths.push(mp);
+          pathLengths.push(len);
+        }
+        if (head) heads.push(head);
+      }
+
+      updateScroll();
+    };
+
+    let ticking = false;
+
+    const updateScroll = () => {
+      if (getComputedStyle(svg).display === "none" || reduced) {
+        steps.forEach((s) => s.classList.add("in"));
+        return;
+      }
+
+      const rect = rm.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // Card 01 appears when section enters viewport
+      if (rect.top <= vh * 0.85) {
+        steps[0]?.classList.add("in");
+      } else {
+        steps[0]?.classList.remove("in");
+      }
+
+      /* 
+         Accelerated Waterfall progress P in [0, 1] through the roadmap section.
+      */
+      const startY = vh * 0.85;
+      const endY = vh * 0.48;
+      const totalDist = rect.height * 0.7 + (startY - endY);
+      const currentDist = startY - rect.top;
+      const P = Math.max(0, Math.min(1, currentDist / totalDist));
+
+      const numWires = maskPaths.length; // 3
+      for (let i = 0; i < numWires; i++) {
+        const mp = maskPaths[i];
+        const head = heads[i];
+        const nextStep = steps[i + 1];
+        const len = pathLengths[i];
+
+        // Sequential windows for each wire segment
+        const wStart = i / numWires;
+        const wEnd = (i + 0.95) / numWires;
+        const segProgress = Math.max(0, Math.min(1, (P - wStart) / (wEnd - wStart)));
+
+        if (mp && len) {
+          mp.style.setProperty("stroke-dashoffset", `${len * (1 - segProgress)}`, "important");
+        }
+
+        if (segProgress >= 0.96) {
+          head?.classList.add("active");
+        } else {
+          head?.classList.remove("active");
+        }
+
+        // Card reveals ONLY when wire segment has fully grown to destination (>=98%)
+        if (segProgress >= 0.98) {
+          nextStep?.classList.add("in");
+        } else {
+          nextStep?.classList.remove("in");
+        }
+      }
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateScroll);
+      }
     };
 
     draw();
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", draw);
     if (window.ResizeObserver) {
       const ro = new ResizeObserver(draw);
       ro.observe(rm);
       rm.querySelectorAll(".rm-card").forEach((c) => ro.observe(c));
     }
-    /* card height shifts once the webfont swaps in */
     if (document.fonts?.ready) document.fonts.ready.then(draw);
   }
 </script>
