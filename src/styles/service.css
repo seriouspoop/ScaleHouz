@@ -1,4 +1,4 @@
-/* Scale Houz — D2C service detail pages (Brand Architecture / Digital Experience / Content & Authority). */
+/* ScaleHouz — D2C service detail pages (Brand Architecture / Digital Experience / Content & Authority). */
 body { margin: 0; background: var(--sh-black); color: var(--sh-white); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 ::selection { background: var(--sh-yellow); color: var(--sh-black); }
 a { color: inherit; }

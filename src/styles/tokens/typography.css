@@ -1,4 +1,4 @@
-/* Scale Houz — Typography tokens (source: Design System sheet + Brand Guidelines p.10) */
+/* ScaleHouz — Typography tokens (source: Design System sheet + Brand Guidelines p.10) */
 :root {
   --font-sans: 'Poppins', system-ui, sans-serif;          /* primary — all UI & headings */
   --font-serif: 'Source Serif 4', Georgia, serif;          /* editorial accents */

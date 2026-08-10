@@ -1,4 +1,4 @@
-/* Scale Houz website — interaction layer.
+/* ScaleHouz website — interaction layer.
    Motion uses transform/opacity/filter only. Respects prefers-reduced-motion. */
 (function () {
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
