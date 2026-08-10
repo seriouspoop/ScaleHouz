@@ -1,23 +1,24 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import Marquee from '../components/Marquee.astro';
-import Stats from '../components/Stats.astro';
-import Featured from '../components/Featured.astro';
-import Projects from '../components/Projects.astro';
-import Services from '../components/Services.astro';
-import Manifesto from '../components/Manifesto.astro';
-import Roadmap from '../components/Roadmap.astro';
-import Testimonials from '../components/Testimonials.astro';
-import Faq from '../components/Faq.astro';
-import CtaSection from '../components/CtaSection.astro';
-import Footer from '../components/Footer.astro';
-import '../styles/home.css';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Marquee from "../components/Marquee.astro";
+import Stats from "../components/Stats.astro";
+import Featured from "../components/Featured.astro";
+import Projects from "../components/Projects.astro";
+import Services from "../components/Services.astro";
+import Manifesto from "../components/Manifesto.astro";
+import Roadmap from "../components/Roadmap.astro";
+import Testimonials from "../components/Testimonials.astro";
+import Faq from "../components/Faq.astro";
+import CtaSection from "../components/CtaSection.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/home.css";
 ---
+
 <BaseLayout
-  title="Scale Houz — Every design to scale."
-  description="Scale Houz is a global branding, web design & marketing agency for D2C brands. Brand strategy, premium websites, and growth marketing engineered to convert."
+  title="ScaleHouz — D2C Branding Agency"
+  description="ScaleHouz is a global branding, web design & marketing agency for D2C brands. Brand strategy, premium websites, and growth marketing engineered to convert."
   path="/"
 >
   <div id="progress" aria-hidden="true"></div>
@@ -48,6 +49,7 @@ import '../styles/home.css';
 
   <Footer />
 
-  <script is:inline src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script is:inline src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"
+  ></script>
   <script is:inline src="/site.js"></script>
 </BaseLayout>

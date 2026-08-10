@@ -11,7 +11,7 @@ const FORM_ENDPOINT = 'https://api.web3forms.com/submit';
 const WEB3FORMS_KEY = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? 'a9e1bf42-e1f7-4f5d-9feb-d7669d02c848';
 ---
 <BaseLayout
-  title="Start a project — Scale Houz"
+  title="Start a project — ScaleHouz"
   description="Tell us about your D2C brand and what you need — brand, design, website, or marketing. We reply within a day."
   path="/onboarding"
 >
@@ -24,7 +24,7 @@ const WEB3FORMS_KEY = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? 'a9e1bf42-e1f7-4f5
   <div id="cursor-ring" aria-hidden="true"></div>
 
   <div class="ob-top">
-    <a class="logo" href="/" aria-label="Scale Houz — home"><img src="/assets/logo/scale_houz.svg" alt="Scale Houz" /></a>
+    <a class="logo" href="/" aria-label="ScaleHouz — home"><img src="/assets/logo/scale_houz.svg" alt="ScaleHouz" /></a>
     <a class="ob-back" href="/">← Back to site</a>
   </div>
   <div class="ob-bar-wrap"><div id="ob-bar"></div></div>
@@ -167,7 +167,7 @@ const WEB3FORMS_KEY = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? 'a9e1bf42-e1f7-4f5
   function sendForm(done){
     var payload = {
       access_key: WEB3FORMS_KEY,
-      subject: 'New project brief — Scale Houz',
+      subject: 'New project brief — ScaleHouz',
       name: data.name || '', email: data.email || '', phone: data.phone || '',
       brand: data.brand || '', industry: data.industry || '', requirement: data.requirement || ''
     };
