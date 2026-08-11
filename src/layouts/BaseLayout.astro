@@ -43,26 +43,24 @@ const orgSchema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Order matters: Chromium uses the LAST rel="icon", so the legacy .ico
-       goes first and the SVG last. -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
-    <!-- Solid-background raster icons: Google Search results and iOS home screen.
-       Google weights apple-touch-icon and 48px multiples most heavily. Kept
-       before the SVG so the tab still gets the transparent mark. -->
+    <!-- Tab favicon: transparent bg, black mark (favicon.ico/svg below).
+       Solid-background raster icons: Google Search results and iOS home screen.
+       All raster sizes are multiples of 48px per Google's favicon guidance. -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=7" sizes="any" />
     <link
       rel="icon"
       type="image/png"
       sizes="192x192"
-      href="/icon-192x192.png"
+      href="/icon-192x192.png?v=2"
     />
     <link
       rel="icon"
       type="image/png"
-      sizes="512x512"
-      href="/icon-512x512.png"
+      sizes="480x480"
+      href="/icon-480x480.png"
     />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192x192.png?v=2" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=6" />
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
