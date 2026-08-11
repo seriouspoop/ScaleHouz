@@ -470,6 +470,10 @@ body>footer {
     height: 260px;
     opacity: .14;
   }
+
+  #scroll-hint {
+    display: none;
+  }
 }
 
 /* hero palette — orange variant (Tweaks) */
